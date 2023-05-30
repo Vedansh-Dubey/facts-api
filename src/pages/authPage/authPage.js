@@ -119,7 +119,7 @@ const AuthPage = () => {
                 console.error('Error generating unique API key:', error);
               });
           }
-          navigate(`/ApiDashboard/${user.uid}`);
+          navigate(`/ApiDashboard`, { state: { uid: userId } });
         });
       })
       .catch((error) => {

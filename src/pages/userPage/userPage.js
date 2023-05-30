@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
-import { useParams } from 'react-router-dom';
 import generateUniqueKey from '../../utils/firebaseUtils';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Table, Button, Input, Space } from 'antd';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 const UserPage = () => {
-  const { uid } = useParams();
+  const location = useLocation();
+  const uid = location.state.uid;
   const [apiKeys, setApiKeys] = useState([]);
   const [newKeyName, setNewKeyName] = useState('');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const database = firebase.database();
@@ -86,53 +91,104 @@ const UserPage = () => {
     toast.success('API key name updated!');
   };
 
+  const handleLogout = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+
+      })
+      .catch((error) => {
+        console.log('Error signing out:', error);
+      });
+  };
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      // User not authenticated, navigate to the login page
+      navigate('/login');
+    }
+    
+  }, [navigate]);
+
+  useEffect(() => {
+    // Listen for changes in user authentication state
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        // User signed out, navigate to the login page
+        navigate('/login');
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [navigate]);
+
+
+  const columns = [
+    { title: 'Name', dataIndex: 'name', key: 'name' },
+    { title: 'Key', dataIndex: 'key', key: 'key' },
+    { title: 'Usage', dataIndex: 'usage', key: 'usage' },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <Space>
+          <Button
+            type="primary"
+            danger
+            onClick={() => handleKeyDelete(record.id)}
+            icon={<DeleteOutlined />}
+          >
+            Delete
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => {
+              const newName = prompt('Enter a new name:');
+              if (newName) {
+                handleKeyEdit(record.id, newName);
+              }
+            }}
+            icon={<EditOutlined />}
+          >
+            Edit
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+
   return (
     <div>
       <ToastContainer />
       <h1>User Dashboard</h1>
       <h2>API Keys</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Key</th>
-            <th>Usage</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {apiKeys.map((key) => (
-            <tr key={key.id}>
-              <td>{key.name}</td>
-              <td>{key.key}</td>
-              <td>{key.usage}</td>
-              <td>
-                <button onClick={() => handleKeyDelete(key.id)}>Delete</button>
-                <button
-                  onClick={() => {
-                    const newName = prompt('Enter a new name:');
-                    if (newName) {
-                      handleKeyEdit(key.id, newName);
-                    }
-                  }}
-                >
-                  Edit
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table
+        columns={columns}
+        dataSource={apiKeys}
+        rowKey="id"
+        pagination={false}
+      />
       <div>
-        <input
+        <Input
           type="text"
           value={newKeyName}
           onChange={(e) => setNewKeyName(e.target.value)}
         />
-        <button onClick={handleNewKeySubmit}>Create New Key</button>
+        <Button type="primary" onClick={handleNewKeySubmit}>
+          Create New Key
+        </Button>
       </div>
+      <Button type="primary" danger onClick={handleLogout}>
+        Logout
+      </Button>
     </div>
   );
 };
 
 export default UserPage;
+

@@ -9,8 +9,8 @@ function App() {
   return (
     <BrowserRouter>
     <Routes>
-      <Route path="/" element={<AuthPage />} />
-      <Route path="/ApiDashboard/:uid" element={<UserPage />} />
+      <Route path="/login" element={<AuthPage />} />
+      <Route path="/ApiDashboard" element={<UserPage />} />
       {/* Define other routes and their corresponding components */}
     </Routes>
   </BrowserRouter>
