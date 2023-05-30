@@ -10,7 +10,7 @@ function App() {
     <BrowserRouter>
     <Routes>
       <Route path="/" element={<AuthPage />} />
-      <Route path="/ApiDashboard" element={<UserPage />} />
+      <Route path="/ApiDashboard/:uid" element={<UserPage />} />
       {/* Define other routes and their corresponding components */}
     </Routes>
   </BrowserRouter>

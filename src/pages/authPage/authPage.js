@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-import OTPInput from 'otp-input-react';
 import { Button } from 'antd';
 import './authPage.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,7 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/database';
-
+import OTPInputComponent from '../../components/OTPInputComponent';
+import PhoneInputComponent from '../../components/PhoneInputComponent';
+import generateUniqueKey from '../../utils/firebaseUtils';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 firebase.initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -28,20 +29,21 @@ const AuthPage = () => {
   const [OTP, setOTP] = useState('');
   const [showOTP, setShowOTP] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState(null);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
-    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      size: 'invisible',
-      callback: () => {
-
-      },
-      'expired-callback': () => {
-        alert('reCAPTCHA verification expired. Please try again.');
-        window.location.reload();
-      },
-      timeout: 60000,
-    });
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+      'recaptcha-container',
+      {
+        size: 'invisible',
+        callback: () => {},
+        'expired-callback': () => {
+          toast.error('reCAPTCHA verification expired. Please try again.');
+          window.location.reload();
+        },
+        timeout: 60000,
+      }
+    );
   }, []);
 
   const handlePhoneChange = (value) => {
@@ -50,7 +52,7 @@ const AuthPage = () => {
 
   const phoneCheck = () => {
     if (phone === '') {
-      alert('Please enter a valid phone number.');
+      toast.error('Please enter a valid phone number.');
       window.location.reload();
     } else {
       sendOTP();
@@ -67,8 +69,12 @@ const AuthPage = () => {
       })
       .catch((error) => {
         console.error('Error sending OTP:', error);
-        alert('An error occurred while sending the OTP.');
+        toast.error('An error occurred while sending the OTP.');
       });
+  };
+
+  const handleOTPChange = (value) => {
+    setOTP(value);
   };
 
   const handleVerify = () => {
@@ -77,7 +83,7 @@ const AuthPage = () => {
       .then((result) => {
         var user = result.user;
         console.log('User authenticated:', user);
-        alert('OTP verification successful!');
+        toast.success('OTP verification successful!');
         const userId = user.uid;
         const database = firebase.database();
         const userRef = database.ref('Users/' + userId);
@@ -85,20 +91,23 @@ const AuthPage = () => {
           if (!snapshot.exists()) {
             generateUniqueKey()
               .then((apiKey) => {
-                console.log("", apiKey);
+                console.log('', apiKey);
                 const defaultValues = {
                   username: userId,
                   fixedQuota: 200,
                   APIKeys: {
                     defaultKey: {
                       key: apiKey,
-                      name: 'Default Key'
-                    }
-                  }
+                      name: 'Default Key',
+                      usage: 0,
+                    },
+                  },
                 };
                 const updates = {};
                 updates['Users/' + userId] = defaultValues;
-                database.ref().update(updates)
+                database
+                  .ref()
+                  .update(updates)
                   .then(() => {
                     console.log('New user node created successfully!');
                   })
@@ -110,41 +119,14 @@ const AuthPage = () => {
                 console.error('Error generating unique API key:', error);
               });
           }
-          navigate('/ApiDashboard');
+          navigate(`/ApiDashboard/${user.uid}`);
         });
       })
       .catch((error) => {
         console.error('Error verifying OTP:', error);
-        alert('An error occurred while verifying the OTP. Please try again.');
+        toast.error('An error occurred while verifying the OTP. Please try again.');
       });
   };
-  
-  
-  const { v4: uuidv4 } = require('uuid');
-
-  const generateUniqueKey = () => {
-    return new Promise((resolve, reject) => {
-      const apiKey = uuidv4(); 
-      const database = firebase.database();
-      const apiKeysRef = database.ref('APIKeys');
-      apiKeysRef
-        .orderByChild('key')
-        .equalTo(apiKey)
-        .once('value')
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            resolve(generateUniqueKey());
-          } else {
-            resolve(apiKey);
-          }
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  };
-  
-
 
   return (
     <div className="Auth">
@@ -156,15 +138,15 @@ const AuthPage = () => {
       <form className="AuthForm">
         {showOTP ? (
           <div className="InputWrapper">
-            <FontAwesomeIcon icon={faUserShield} style={{ color: '#ffffff', fontSize: '65px' }} />
+            <FontAwesomeIcon
+              icon={faUserShield}
+              style={{ color: '#ffffff', fontSize: '65px' }}
+            />
             <label className="InputLabel">Verify Your OTP</label>
-            <OTPInput
-              value={OTP}
-              onChange={setOTP}
-              autoFocus
-              OTPLength={6}
-              otpType="number"
-              disabled={false}
+            <OTPInputComponent
+              OTP={OTP}
+              handleOTPChange={handleOTPChange}
+              handleVerify={handleVerify}
             />
             <Button className="FormButton" type="primary" onClick={handleVerify}>
               Verify
@@ -172,9 +154,15 @@ const AuthPage = () => {
           </div>
         ) : (
           <div className="InputWrapper">
-            <FontAwesomeIcon icon={faPhone} style={{ color: '#ffffff', fontSize: '55px' }} />
+            <FontAwesomeIcon
+              icon={faPhone}
+              style={{ color: '#ffffff', fontSize: '55px' }}
+            />
             <label className="InputLabel">Verify Your Phone Number</label>
-            <PhoneInput country={'in'} value={phone} onChange={handlePhoneChange} />
+            <PhoneInputComponent
+              phone={phone}
+              handlePhoneChange={handlePhoneChange}
+            />
             <Button className="FormButton" type="primary" onClick={phoneCheck}>
               Send OTP
             </Button>
@@ -182,8 +170,9 @@ const AuthPage = () => {
         )}
       </form>
       <div id="recaptcha-container"></div>
+      <ToastContainer />
     </div>
   );
-}
+};
 
 export default AuthPage;
