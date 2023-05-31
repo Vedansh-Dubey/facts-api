@@ -5,9 +5,9 @@ import generateUniqueKey from '../../utils/firebaseUtils';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Table, Button, Input, Space } from 'antd';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-
+import { Table, Button, Input, Space, Popconfirm, Popover } from 'antd';
+import { DeleteOutlined, EditOutlined, CopyOutlined, LogoutOutlined } from '@ant-design/icons';
+import "./userPage.css";
 const UserPage = () => {
   const location = useLocation();
   const uid = location.state.uid;
@@ -45,6 +45,11 @@ const UserPage = () => {
 
   const handleNewKeySubmit = async () => {
     if (newKeyName.trim() !== '') {
+      if (newKeyName.trim().length > 12) {
+        toast.error('API key name should not exceed 12 characters');
+        return;
+      }
+
       const database = firebase.database();
       const apiKeyRef = database.ref('Users/' + uid + '/APIKeys');
 
@@ -83,6 +88,11 @@ const UserPage = () => {
   };
 
   const handleKeyEdit = (keyId, newName) => {
+    if (newName.trim().length > 12) {
+      toast.error('API key name should not exceed 12 characters');
+      return;
+    }
+
     const database = firebase.database();
     const apiKeyRef = database.ref('Users/' + uid + '/APIKeys/' + keyId);
 
@@ -95,9 +105,7 @@ const UserPage = () => {
     firebase
       .auth()
       .signOut()
-      .then(() => {
-
-      })
+      .then(() => {})
       .catch((error) => {
         console.log('Error signing out:', error);
       });
@@ -110,7 +118,6 @@ const UserPage = () => {
       // User not authenticated, navigate to the login page
       navigate('/login');
     }
-    
   }, [navigate]);
 
   useEffect(() => {
@@ -127,68 +134,116 @@ const UserPage = () => {
     };
   }, [navigate]);
 
+  const handleKeyCopy = (key) => {
+    navigator.clipboard.writeText(key);
+    toast.success('API key copied to clipboard!');
+  };
 
   const columns = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'Key', dataIndex: 'key', key: 'key' },
+    {
+      title: 'Key',
+      dataIndex: 'key',
+      key: 'key',
+      render: (text) => (
+        <Space>
+          <span>{text}</span>
+          <Popover title="Copy to clipboard">
+          <CopyOutlined
+            onClick={() => handleKeyCopy(text)}
+            style={{ cursor: 'pointer', color: "grey", fontSize: "17px" }}
+          />
+          </Popover>
+        </Space>
+      ),
+    },
     { title: 'Usage', dataIndex: 'usage', key: 'usage' },
     {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
         <Space>
-          <Button
-            type="primary"
-            danger
-            onClick={() => handleKeyDelete(record.id)}
+          <Popconfirm
+            title="Delete the key"
+            description="Are you sure to delete this API Key?"
+            onConfirm={() => handleKeyDelete(record.id)}
+            okText="Yes"
+            cancelText="No"
             icon={<DeleteOutlined />}
           >
-            Delete
-          </Button>
-          <Button
-            type="primary"
+          <DeleteOutlined style={{ cursor: "pointer", color: "red", fontSize: "18px", padding:"10px" }} danger />
+          </Popconfirm>
+          <EditOutlined
+            style={{ cursor: "pointer", color: "blue", fontSize: "18px", padding:"10px" }}
             onClick={() => {
               const newName = prompt('Enter a new name:');
               if (newName) {
                 handleKeyEdit(record.id, newName);
               }
             }}
-            icon={<EditOutlined />}
-          >
-            Edit
-          </Button>
+          />
+
         </Space>
       ),
     },
   ];
 
   return (
-    <div>
+    <div className="user-page">
       <ToastContainer />
-      <h1>User Dashboard</h1>
-      <h2>API Keys</h2>
+      <h1 className="dashboard-heading">WELCOME !!</h1>
+      <h2 className="api-keys-heading">Your API Keys</h2>
       <Table
+        className="api-keys-table"
         columns={columns}
         dataSource={apiKeys}
         rowKey="id"
-        pagination={false}
+        pagination={{
+          pageSize: 3,
+
+        }}
+        scroll={{
+          y: 300,
+          x: 650,          
+        }}
       />
-      <div>
+      <div className="new-key-form">
         <Input
+        placeholder='Enter new key name'
+          className="key-input"
           type="text"
           value={newKeyName}
           onChange={(e) => setNewKeyName(e.target.value)}
         />
-        <Button type="primary" onClick={handleNewKeySubmit}>
+         <Popover title="Generate a new key with the given name." content={<p>The usage of the following key would also be consumed from total Quota</p>}>
+        <Button
+          className="create-key-button"
+          type="primary"
+          onClick={handleNewKeySubmit}
+        >
           Create New Key
         </Button>
+        </Popover>
       </div>
-      <Button type="primary" danger onClick={handleLogout}>
+      <Popconfirm
+      title="Are you sure"
+      description="You would be logged out of the current session"
+      onConfirm={()=> handleLogout()}
+      okText="Yes"
+      cancelText="No"
+      icon={<LogoutOutlined />}
+      >
+      <Button
+        className="logout-button"
+        type="primary"
+        danger
+        icon={<LogoutOutlined/>}
+      >
         Logout
       </Button>
+      </Popconfirm>
     </div>
   );
 };
 
 export default UserPage;
-

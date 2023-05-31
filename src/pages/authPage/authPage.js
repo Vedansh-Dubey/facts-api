@@ -28,6 +28,7 @@ const AuthPage = () => {
   const [phone, setPhone] = useState('');
   const [OTP, setOTP] = useState('');
   const [showOTP, setShowOTP] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState(null);
   const navigate = useNavigate();
 
@@ -60,16 +61,19 @@ const AuthPage = () => {
   };
 
   const sendOTP = () => {
+    setLoading(true); // Start loading state
     firebase
       .auth()
       .signInWithPhoneNumber(`+${phone}`, window.recaptchaVerifier)
       .then((result) => {
         setConfirmationResult(result);
         setShowOTP(true);
+        setLoading(false); // Stop loading state
       })
       .catch((error) => {
         console.error('Error sending OTP:', error);
         toast.error('An error occurred while sending the OTP.');
+        setLoading(false); // Stop loading state
       });
   };
 
@@ -78,6 +82,7 @@ const AuthPage = () => {
   };
 
   const handleVerify = () => {
+    setLoading(true); // Start loading state
     confirmationResult
       .confirm(OTP)
       .then((result) => {
@@ -125,6 +130,7 @@ const AuthPage = () => {
       .catch((error) => {
         console.error('Error verifying OTP:', error);
         toast.error('An error occurred while verifying the OTP. Please try again.');
+        setLoading(false); // Stop loading state
       });
   };
 
@@ -147,8 +153,14 @@ const AuthPage = () => {
               OTP={OTP}
               handleOTPChange={handleOTPChange}
               handleVerify={handleVerify}
+              loading={loading} // Pass loading state to OTPInputComponent
             />
-            <Button className="FormButton" type="primary" onClick={handleVerify}>
+            <Button
+              className="FormButton"
+              type="primary"
+              onClick={handleVerify}
+              loading={loading} // Enable loading state for the Verify button
+            >
               Verify
             </Button>
           </div>
@@ -162,8 +174,14 @@ const AuthPage = () => {
             <PhoneInputComponent
               phone={phone}
               handlePhoneChange={handlePhoneChange}
+              loading={loading} // Pass loading state to PhoneInputComponent
             />
-            <Button className="FormButton" type="primary" onClick={phoneCheck}>
+            <Button
+              className="FormButton"
+              type="primary"
+              onClick={phoneCheck}
+              loading={loading} // Enable loading state for the Send OTP button
+            >
               Send OTP
             </Button>
           </div>
