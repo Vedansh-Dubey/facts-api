@@ -5,8 +5,9 @@
     align-items: center;
     min-height: 100vh;
     gap: 15px;
-    min-width: 100vw;
+  
     background-color: #f2f2f2;
+    max-width: 100vw;
   overflow-x: hidden;
   }
   
@@ -50,15 +51,15 @@
   }
   
   .dashboard-heading {
-    font-size: 24px;
+    font-size: 40px;
     font-weight: bold;
-    color: #333333;
+    color: #ff7f0e;
   }
   
   .api-keys-heading {
-    font-size: 18px;
+    font-size: 30px;
     font-weight: bold;
-    color: #333333;
+    color: #1f77b4;
   }
   
   .key-input {
@@ -70,7 +71,7 @@
   }
   
   .create-key-button {
-    background-color:#40a2fed0;
+    background-color:#1f77b4;
 height: 40PX;
     border-radius: 4px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -86,6 +87,7 @@ height: 40PX;
     margin-top: 20px;
     border-radius: 4px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
   }
   
   .logout-button:hover {
@@ -103,8 +105,7 @@ height: 40PX;
 }
 
 .remaining-quota-card, .api-usage-card {
-  width: 40vw;
-  height: 40vh;
+
   /* margin: 20px; */
   padding: 20px;
   border: 1px solid #ccc;
@@ -115,22 +116,25 @@ height: 40PX;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-width: 265px;
-  max-height: 400px;
-  min-height: 265px;
-  max-width: 400px;
+  margin-inline: 5px;
+
 }
 
-.chart-wrapper{
+.chart-wrapper {
   display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    gap: 25px;
-    justify-content: center;
-    align-items: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 80vw;
+  gap: 50px;
 }
+
+
 
 .remaining-quota-card h3,
 .api-usage-card h3 {
   margin-bottom: 10px;
+  font-size: 24px;
+  color: #000000a3;
 }

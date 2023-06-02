@@ -1,0 +1,42 @@
+.error-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f1f1f1;
+    font-family: Arial, sans-serif;
+    color: #333;
+    text-align: center;
+  }
+  
+  .error-fallback h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+  
+  .error-fallback p {
+    font-size: 18px;
+    margin-bottom: 24px;
+  }
+  
+  .error-fallback button {
+    background-color: #ff5f5f;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .error-fallback button:hover {
+    background-color: #ff4242;
+  }
+  
+  .fallback-img{
+    width: 45vw;
+    max-width: 450px;
+    min-width: 300px;
+  }

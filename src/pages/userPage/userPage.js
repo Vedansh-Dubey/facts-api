@@ -4,7 +4,7 @@ import 'firebase/compat/database';
 import generateUniqueKey from '../../utils/firebaseUtils';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
 import { Table, Button, Input, Space, Popconfirm, Popover } from 'antd';
 import { DeleteOutlined, EditOutlined, CopyOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Chart, ArcElement } from 'chart.js';
@@ -12,9 +12,9 @@ import "./userPage.css"
 import ReactApexChart from 'react-apexcharts';
 Chart.register(ArcElement);
 
-const UserPage = () => {
-  const location = useLocation();
-  const uid = location.state.uid;
+const UserPage = ({ uid }) => {
+  // const location = useLocation();
+  // const uid = location.state.uid;
   const [apiKeys, setApiKeys] = useState([]);
   const [newKeyName, setNewKeyName] = useState('');
   const [quota, setQuota] = useState(0); // Initialize quota state with 0
@@ -56,6 +56,8 @@ const UserPage = () => {
         const userData = snapshot.val();
         const userQuota = userData.fixedQuota || 0; // Get the quota value from the database
         setQuota(userQuota);
+        const totalUsage = userData.usedQuota;
+        setUsedQuota(totalUsage);
       }
     };
 
@@ -65,12 +67,6 @@ const UserPage = () => {
       userRef.off('value', fetchQuota);
     };
   }, [uid]);
-
-  useEffect(() => {
-    const totalUsage = apiKeys.reduce((total, key) => total + key.usage, 0);
-
-    setUsedQuota(totalUsage);
-  }, [apiKeys, quota]);
 
   const pieChartData = {
     series: [usedQuota, quota - usedQuota],
@@ -240,7 +236,7 @@ const UserPage = () => {
             <DeleteOutlined style={{ cursor: "pointer", color: "red", fontSize: "18px", padding: "10px" }} />
           </Popconfirm>
           <EditOutlined
-            style={{ cursor: "pointer", color: "blue", fontSize: "18px", padding: "10px" }}
+            style={{ cursor: "pointer", color: "#1f77b4", fontSize: "18px", padding: "10px" }}
             onClick={() => {
               const newName = prompt('Enter a new name:');
               if (newName) {

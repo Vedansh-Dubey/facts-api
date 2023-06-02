@@ -99,9 +99,10 @@ const AuthPage = () => {
                 console.log('', apiKey);
                 const defaultValues = {
                   username: userId,
-                  fixedQuota: 200,
+                  fixedQuota: 1000,
+                  usedQuota: 0,
                   APIKeys: {
-                    defaultKey: {
+                    [apiKey]: {
                       key: apiKey,
                       name: 'Default Key',
                       usage: 0,
@@ -124,7 +125,7 @@ const AuthPage = () => {
                 console.error('Error generating unique API key:', error);
               });
           }
-          navigate(`/ApiDashboard`, { state: { uid: userId } });
+          navigate(`/dashboard`, { state: { uid: userId } });
         });
       })
       .catch((error) => {
@@ -134,8 +135,20 @@ const AuthPage = () => {
       });
   };
 
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (showOTP) {
+        handleVerify();
+      } else {
+        phoneCheck();
+      }
+    }
+  };
+
   return (
-    <div className="Auth">
+    <div className="Auth" onKeyDownCapture={handleKeyPress}>
       <h1 className="AuthTitle">
         Welcome!
         <br />
