@@ -94,7 +94,7 @@ const DocumentationPage = () => {
 
                     <h4 className="example-title">Example Request</h4>
                     <pre>
-                        <code>{`GET /api/facts?quant=5&tag=technology,programming\nx-api-key: {API_KEY}`}</code>
+                        <code>{`GET /api/facts?quant=5&tag=ProgrammingLanguages\nx-api-key: {API_KEY}`}</code>
                     </pre>
 
                     <h4 className="example-title">Example Response</h4>
