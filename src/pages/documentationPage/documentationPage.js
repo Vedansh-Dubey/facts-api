@@ -152,7 +152,7 @@ const DocumentationPage = () => {
                 <br />
                 <ul>
                     <li>
-                        <a href="https://www.google.com/">API Dashboard</a> - Required for authentication and quota verification.
+                        <a href="https://Vedansh-Dubey.github.io/facts-api/dashboard">API Dashboard</a> - Required for authentication and quota verification.
                     </li>
                 </ul>
                 <pre style={{ color: "red" }}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Navigate, Routes, Link } from 'react-router-dom';
+import { HashRouter, Route, Navigate, Routes, Link } from 'react-router-dom';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/database'; // Add this import for the Realtime Database
@@ -58,7 +58,7 @@ const App = () => {
   };
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Layout>
         <Header style={{padding:"0px"}}>
           <Menu theme="dark" mode="horizontal" style={{
@@ -74,6 +74,7 @@ const App = () => {
         </Header>
         <Content>
           <Routes>
+          <Route path="/" element={<AuthPage />} />
             <Route path="/dashboard" element={<UserPage uid={user?.uid} onLogout={handleLogout} />} />
             <Route path="/documentation" element={<DocumentationPage />} />
             {user ? (
@@ -109,7 +110,7 @@ const App = () => {
           </Routes>
         </Content>
       </Layout>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 

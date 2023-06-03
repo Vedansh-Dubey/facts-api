@@ -87,7 +87,7 @@ const AuthPage = () => {
       .confirm(OTP)
       .then((result) => {
         var user = result.user;
-        console.log('User authenticated:', user);
+        console.log('User authenticated:');
         toast.success('OTP verification successful!');
         const userId = user.uid;
         const database = firebase.database();
@@ -96,7 +96,6 @@ const AuthPage = () => {
           if (!snapshot.exists()) {
             generateUniqueKey()
               .then((apiKey) => {
-                console.log('', apiKey);
                 const defaultValues = {
                   username: userId,
                   fixedQuota: 1000,

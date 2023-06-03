@@ -2,7 +2,7 @@
   "name": "facts-api",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://Vedansh-Dubey/facts-api.github.io",
+  "homepage": "https://Vedansh-Dubey.github.io/facts-api",
   "dependencies": {
     "@ant-design/icons": "^5.1.3",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
