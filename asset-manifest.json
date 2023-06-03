@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/facts-api.github.io/static/css/main.bfd19161.css",
-    "main.js": "/facts-api.github.io/static/js/main.1f1b6973.js",
-    "index.html": "/facts-api.github.io/index.html",
-    "main.bfd19161.css.map": "/facts-api.github.io/static/css/main.bfd19161.css.map",
-    "main.1f1b6973.js.map": "/facts-api.github.io/static/js/main.1f1b6973.js.map"
+    "main.css": "/facts-api/login/static/css/main.bfd19161.css",
+    "main.js": "/facts-api/login/static/js/main.7eec8b1c.js",
+    "index.html": "/facts-api/login/index.html",
+    "main.bfd19161.css.map": "/facts-api/login/static/css/main.bfd19161.css.map",
+    "main.7eec8b1c.js.map": "/facts-api/login/static/js/main.7eec8b1c.js.map"
   },
   "entrypoints": [
     "static/css/main.bfd19161.css",
-    "static/js/main.1f1b6973.js"
+    "static/js/main.7eec8b1c.js"
   ]
 }
