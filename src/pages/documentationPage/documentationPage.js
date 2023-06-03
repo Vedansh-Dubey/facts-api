@@ -17,7 +17,7 @@ const DocumentationPage = () => {
 
             <section className="section">
                 <h2 className="section-title">Base URL</h2>
-                <p>The base URL for the API is: <code>http://localhost:8080</code></p>
+                <p>The base URL for the API is: <code>https://it-facts-api.vercel.app/</code></p>
             </section>
 
             <section className="section">
@@ -158,7 +158,7 @@ const DocumentationPage = () => {
                 <pre style={{ color: "red" }}>
                     Make sure you logout after you are done with the dashboard
                 </pre>
-                <p style={{ paddingTop: "10px" }}>To minimize OTP requests on our development package, the session duration has been extended to 2 hours. <b style={{color:"red"}}>If you close the tab or navigate away, you'll remain logged in until you manually log out of the session.</b> After 2 hours of inactivity, the system will automatically log you out for security. This approach balances user experience and security by preventing indefinite session persistence.</p>
+                <p style={{ paddingTop: "10px" }}>To minimize OTP requests on our development package, the session duration has been extended<b style={{color:"red"}}>If you close the tab or navigate away, you'll remain logged in until you manually log out of the session.</b> So logout whenever you feel you are done using the API which would be good for security reasons.</p>
 
                <p> Only 10 users can sign in per day, so if you are facing an error getting the OTP, please try sometime later or the next day.</p>
             </section>
