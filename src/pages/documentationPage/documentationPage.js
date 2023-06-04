@@ -130,7 +130,8 @@ const DocumentationPage = () => {
 
             <section className="section">
                 <h2 className="section-title">Tags and Facts Availability</h2>
-                <p>For each tag listed below, there are currently a maximum of 20 facts available. Please note that some facts may be repeated.</p>
+                <p>For each tag listed below, there are a maximum of 20 facts available for developing stage which would be extended further. Please note that some facts may be repeated.</p>
+                <p>Currently, the data is fixed and populated by compiling the facts from diffrrent resources such as Web Scrapping, Manual Work, using AI tools etc into a json database, and would be expanded further using different optimized approaches</p>
                 <ul>
                     <li>ComputerHistory</li>
                     <li>FunFact</li>
