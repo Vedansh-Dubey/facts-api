@@ -43,6 +43,7 @@ const AuthPage = () => {
           window.location.reload();
         },
         timeout: 60000,
+        siteKey: process.env.REACT_APP_SITE_KEY,
       }
     );
   }, []);
